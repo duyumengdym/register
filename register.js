@@ -90,14 +90,14 @@ phone.blur(function () {
     }else{
         $('#phoneError')[0].style.display="none";
         $('#phoneError1')[0].style.display="none";
-        isPhonetrue='true'
+        isPhonetrue=true
     }
 });
 // 密码数据合法性校验
 password.blur(function () {  
     if (password.val()=='') {
         $('#passwordError')[0].style.display="block";
-        return ;
+        return;
     }else{
         var reg=/(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^[^\s\u4e00-\u9fa5]{8,14}$/;
         if(reg.test(password.val())){
@@ -110,42 +110,39 @@ password.blur(function () {
     
 });
 // 验证码效果
-var counts = 3;
+var counts =30;
 var num=0;
 button.click(function Time () {
-    
         if(phone.val()==""){
             $('#phoneError1')[0].style.display="block"
             $('#phoneError')[0].style.display="none"
         }else if(phone.val()!=""){
             $('#phoneError1')[0].style.display="none";
-            isCodetrue=true;
         }
-        console.log('ok');
-        // if(idPhonetrue){
-            if(counts == 0) {
+        console.log(isPhonetrue);
+            if(counts==0) {
                 button.attr("value","获取验证码");
                 num=0;
                 if(num==0&&checkbox.val()==""){
                     $('#checkError')[0].style.display="block";
                 }
-                counts = 3;
+                counts = 30;
                 return false;
             }else{
-                button.attr("value","重新获取"+"("+counts+")");
-                num=counts;
-                counts--;
-                if(checkbox.val()==""){
+                if(isPhonetrue){
+                    button.attr("value","重新获取"+"("+counts+")");
+                    num=counts;
+                    counts--;
+                    $('#checkError')[0].style.display="none";
+                }else if(isPhonetrue==false){
+                    button.attr("value","获取验证码");
+                    num=counts;
+                    counts--;
                     $('#checkError')[0].style.display="none";
                 }
+                
             }
                 setTimeout(function() {
                     Time();
                 }, 1000);
-            // }
 });
-
-register.click(function () {
-    console.log(1);
-});
-
