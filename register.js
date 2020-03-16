@@ -1,14 +1,13 @@
 var userName=$('#userName');
 var phone=$('#phone');
 var password=$('#password');
-var userNamePass="false";
 var button=$('.button');
 var checkbox=$('#checkbox');
 var checkError=$('#checkError');
 var isPhonetrue=false;
 var isUserNametrue=false;
 var isPasswordtrue=false;
-var register=$('#register');
+var registerButton=$('#registerButton');
 var isCodetrue=false;
 // 用户名提示信息
 userName.click(function (e) {
@@ -40,8 +39,9 @@ userName.blur(function () {
     if (userName.val()=='') {
         $('#userNameError2')[0].style.display="block";
         $('#userNameError')[0].style.display="none";
-        $('#userNameError1')[0].style.display="none"  
-        return ;
+        $('#userNameError1')[0].style.display="none" ;
+        isUserNametrue=false;
+        return false;
     }
     //判断用户名字符串的长度
     var rz=userName.val().replace(/[\u4e00-\u9fa5]/g,"1");
@@ -51,6 +51,8 @@ userName.blur(function () {
         $('#userNameError1')[0].style.display="block";
         $('#userNameError')[0].style.display="none";
         $('#userNameError2')[0].style.display="none";
+        isUserNametrue=false;
+        return false;
     }else if(!ra.test(rz)){
         // 判断是否有非法字符(除了中英文、数字、下划线以外的字符)
         var charReg = /[^\u4E00-\u9FA5\w]/;
@@ -58,8 +60,9 @@ userName.blur(function () {
         if (res) {
             $('#userNameError')[0].style.display="block";
             $('#userNameError1')[0].style.display="none";
-            $('#userNameError2')[0].style.display="none"  
-            return;
+            $('#userNameError2')[0].style.display="none";
+            isUserNametrue=false;
+            return false;
         }
         //判断是否为纯数字
         var numReg = /\D/;
@@ -68,12 +71,14 @@ userName.blur(function () {
             $('#userNameError')[0].style.display="block";
             $('#userNameError1')[0].style.display="none";
             $('#userNameError2')[0].style.display="none";
-            return;
+            isUserNametrue=false;
+            return false;
         }else{
             $('#userNameError')[0].style.display="none";
             $('#userNameError1')[0].style.display="none";
             $('#userNameError2')[0].style.display="none";
-            isUserNametrue=true
+            isUserNametrue=true;
+            return true;
         }
     }
 });
@@ -83,66 +88,90 @@ phone.blur(function () {
     if(phone.val()==""){
         $('#phoneError')[0].style.display="none";
         $('#phoneError1')[0].style.display="block";
+        isPhonetrue=false;
     }
     else if(!reg.test(phone.val())){
         $('#phoneError1')[0].style.display="none";
         $('#phoneError')[0].style.display="block";
+        isPhonetrue=false;
     }else{
         $('#phoneError')[0].style.display="none";
         $('#phoneError1')[0].style.display="none";
-        isPhonetrue=true
+        isPhonetrue=true;
     }
 });
 // 密码数据合法性校验
 password.blur(function () {  
     if (password.val()=='') {
         $('#passwordError')[0].style.display="block";
+        isPasswordtrue=false;
         return;
     }else{
         var reg=/(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^[^\s\u4e00-\u9fa5]{8,14}$/;
         if(reg.test(password.val())){
-            $('#passwordError')[0].style.display="none"
+            $('#passwordError')[0].style.display="none";
             isPasswordtrue=true;
         }else{
-            $('#passwordError')[0].style.display="block"
+            $('#passwordError')[0].style.display="block";
+            isPasswordtrue=false;
         }
     }
     
 });
 // 验证码效果
-var counts =30;
-var num=0;
-button.click(function Time () {
+var timer;
+var timer1;
+button.click(function () {
+        $('#checkError')[0].style.display="none";
         if(phone.val()==""){
-            $('#phoneError1')[0].style.display="block"
-            $('#phoneError')[0].style.display="none"
+            $('#phoneError1')[0].style.display="block";
+            $('#phoneError')[0].style.display="none";
+            console.log(isCodetrue);
         }else if(phone.val()!=""){
             $('#phoneError1')[0].style.display="none";
         }
-        console.log(isPhonetrue);
-            if(counts==0) {
-                button.attr("value","获取验证码");
-                num=0;
-                if(num==0&&checkbox.val()==""){
-                    $('#checkError')[0].style.display="block";
-                }
-                counts = 30;
-                return false;
-            }else{
-                if(isPhonetrue){
-                    button.attr("value","重新获取"+"("+counts+")");
-                    num=counts;
-                    counts--;
-                    $('#checkError')[0].style.display="none";
-                }else if(isPhonetrue==false){
+        if(isPhonetrue){
+            clearTimeout(timer1)
+            var counts=60;
+            button.attr('disabled',true);
+            phone.attr('disabled',true);
+            timer=setInterval(function(){
+                button.attr("value","重新获取"+"("+counts+")");
+                counts--;
+                if(counts==-1){
+                    clearInterval(timer);
+                    button.attr('disabled',false);
+                    phone.attr('disabled',false);
                     button.attr("value","获取验证码");
-                    num=counts;
-                    counts--;
-                    $('#checkError')[0].style.display="none";
+                    if(checkbox.val()==""){
+                        $('#checkError')[0].style.display="block";
+                    }
                 }
-                
-            }
-                setTimeout(function() {
-                    Time();
-                }, 1000);
+            }, 1000);
+        }else if(isPhonetrue==false){
+                timer1=setTimeout(function(){
+                console.log("ok");
+                if(checkbox.val()==""){
+                    $('#checkError')[0].style.display="block";
+                    clearTimeout(timer1);
+                }
+            },60000)
+            $('#checkError')[0].style.display="none";
+        }              
+});
+
+registerButton.click(function () { 
+   if(isUserNametrue&&isPasswordtrue&&isPhonetrue){
+       if(checkbox.val()==""){
+            window.alert("验证码不能为空！");
+           
+       }else{
+            clearTimeout(timer);
+            button.attr("value","获取验证码");
+            window.alert("验证通过！注册成功");
+       }
+
+   }else{
+       window.alert("用户名/手机号/密码填写还有错误！回去再检查下这三项再来吧！");
+   }
 });
