@@ -173,6 +173,7 @@ registerButton.click(function () {
             clearTimeout(timer);
             clearTimeout(timer1);
             button.attr("value","获取验证码");
+            $('#checkError')[0].style.display="none";
             window.alert("验证通过！注册成功");
        }
    }

@@ -158,7 +158,7 @@ label {
     height: 38px;
     position: absolute;
     left: 100px;
-    top: 90px;
+    top: 80px;
     font-size: 10px;
     text-align: center;
     color: #fff;
@@ -212,7 +212,7 @@ label {
     width: 20px;
     height: 20px;
     position: absolute;
-    top:280px;
+    top:274px;
     left: 410px;
     z-index: 1;
     background-image: url('https://passport.baidu.com/static/passpc-account/img/reg/pwdtip-2x.png') ;
